@@ -6,15 +6,21 @@ module.exports = {
     entry: './src/app.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js'
+        filename: 'js/bundle.js'
+    },
+    devServer: {
+        historyApiFallback: true,
+        proxy: {
+            '/products': {
+                target: 'http://localhost:5000',
+            },
+        },
     },
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.scss$/,
 
-                use: [
-                    {
+                use: [{
                         loader: MiniCssExtractPlugin.loader,
                         options: {
                             publicPath: ''
@@ -22,26 +28,43 @@ module.exports = {
                     },
                     {
                         loader: "css-loader",
-                        options: { url: false, sourceMap: true}
-                    }
-                    , {
+                        options: {
+                            url: false,
+                            sourceMap: true
+                        }
+                    }, {
                         loader: "sass-loader",
-                        options: {sourceMap: true}
+                        options: {
+                            sourceMap: true
+                        }
                     }
                 ]
             },
             {
                 test: /\.(png|jpg|jpeg|gif)$/i,
                 loader: 'file-loader',
-                options: {outputPath: 'assets/images', publicPath: '../images', useRelativePaths: true}
+                options: {
+                    outputPath: 'assets/images',
+                    publicPath: '../images',
+                    useRelativePaths: true
+                }
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/i,
                 loader: 'file-loader',
-                options: {outputPath: 'assets/fonts', publicPath: '../fonts', useRelativePaths: true}
+                options: {
+                    outputPath: 'assets/fonts',
+                    publicPath: '../fonts',
+                    useRelativePaths: true
+                }
             }
 
         ]
     },
-    plugins: [new MiniCssExtractPlugin()],
+
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: 'css/[name].css'
+        })
+    ],
 };
